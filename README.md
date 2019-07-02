@@ -1,44 +1,83 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Projet Kavoa
 
-## Available Scripts
+## Installation
+_WIP_
 
-In the project directory, you can run:
+## Introduction à TypeScript
 
-### `npm start`
+Ce projet utilise React avec **TypeScript**, TypeScript est une *préprocesseur* JavaScript conçu par Microsoft dans l'optique de faciliter les développeurs issus d'environnements C# et Java au développement front. TypeScript apporte entre autre un typage fort.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Bien que la syntaxe peut différer de JavaScript, l'ensemble des méthodes restent disponibles. Si vous souhaitez obtenir plus d'information concernant TypeScript: [https://www.typescriptlang.org/](https://www.typescriptlang.org/).
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+Voici un exemple typique de typage des variables avec TypeScript :
+```ts
+const variable:number = 2
+```
 
-### `npm test`
+Vous serez peut être amené à avoir des erreurs du type
+```js
+Le paramètre 'variable' possède implicitement un type 'any'.
+```
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Cela signifie que vous n'avez pas donné de type à votre variable, vous pourrez lui mettre le type **any**, qui correspond à tout les types:
+```ts
+const variable:any = 2
+```
 
-### `npm run build`
+## Architecture de l'application
+```
+.
+├── README.md
+├── package.json
+├── /node_modules
+├── /public
+│   └── index.html
+├── /src
+│   ├── /Components
+│   ├── index.tsx
+│   ├── react-app-env.d.ts
+│   └── /utils
+├── /stories
+├── tsconfig.json
+│   ├── /Pages
+└── yarn.lock
+```
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Voici les dossiers sur lesquelles vous agirez :
+```
+├── src
+│   ├── Components
+│   │   └── Vos composant .tsx
+│   └── utils
+│       └── Quelques outils, d'api, de chargement de page, etc que vous aurez besoin
+└── stories
+    └── index.story.js
+```
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+## Précision sur l'utilisation de react
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Les composants pourront être soit en classes soit en fonction, mais devront toujours s'exporter individuellement, pas d'export par default:
+```js
+export class MonComposant extends React.Component {
+    //du code du code
+}
+```
+ou
+```js
+export const MonComposant = () => {
+    //du code du code
+}
+```
 
-### `npm run eject`
+Si vous passez des props(attributs) personnalisé à vos composants, il faudra les mettres un seul et unique object appelé props
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Utilisation de storybook
+Chaque composant crée devra être ajouté à ```index.story.js```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Pour ajouter un composant :
+```js
+storiesOf('Le nom de votre composant', module)
+    .add('sans donnée', () => <Composant />)
+    .add('avec donnée', () => <Composant props={datas} />)
+    .add('un sous composant', () => <SousComposant/>)
+```
