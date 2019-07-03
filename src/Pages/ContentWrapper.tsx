@@ -1,6 +1,12 @@
 import * as React from 'react'
 
-import { Layout, Breadcrumb, Menu, Icon } from 'antd';
+import { Layout, Menu, Icon } from 'antd';
+
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+
+import { ClientList } from '../Components/ClientList'
+import { DirectoryList } from '../Components/DirectoryList';
+import { Home } from '../Components/Home';
 
 const {Header, Content, Sider } = Layout
 
@@ -14,24 +20,42 @@ const CSSclasses = {
 
 export const ContentWrapper = (props?:any) => {
     const [collapsed,setCollapsed] = React.useState(false);
+    const [connected,setConnected] = React.useState(true)
     const toggleCollapse = () => {
         setCollapsed(!collapsed)
     }
-    return <Layout style={{height: '100vh'}}>
+
+    const deconnect = () => {
+        localStorage.setItem('connected', 'false')
+        setConnected(false)
+    }
+
+    return <Router>
+    <Layout style={{height: '100vh'}}>
         <Sider trigger={null} collapsible collapsed={collapsed}>
           <div style={CSSclasses.logo} />
           <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
             <Menu.Item key="1">
-              <Icon type="user" />
-              <span>nav 1</span>
+                <Link to='/'>
+                    <Icon type="home" />
+                    <span>Accueil</span>
+                </Link>
             </Menu.Item>
             <Menu.Item key="2">
-              <Icon type="video-camera" />
-              <span>nav 2</span>
+                <Link to='/client'>
+                    <Icon type="user" />
+                    <span>Utilisateurs</span>
+                </Link>
             </Menu.Item>
             <Menu.Item key="3">
-              <Icon type="upload" />
-              <span>nav 3</span>
+                <Link to='directory'>
+                    <Icon type="database" />
+                    <span>Dossiers</span>
+              </Link>
+            </Menu.Item>
+            <Menu.Item key='4' onClick={() => deconnect()}>
+                <Icon type='close' />
+                <span>Déconnexion</span>
             </Menu.Item>
           </Menu>
         </Sider>
@@ -42,17 +66,20 @@ export const ContentWrapper = (props?:any) => {
               className="trigger"
               type={collapsed ? 'menu-unfold' : 'menu-fold'}
               onClick={() => toggleCollapse()}
-            />
+              />
           </Header>
           <Content
             style={{
-              margin: '24px 16px',
-              padding: 24,
-              background: '#fff',
+                margin: '24px 16px',
+                padding: 24,
+                background: '#fff',
             }}
-          >
-            Content
+            >
+            <Route exact path='/' component={Home}></Route>
+            <Route path='/client' component={ClientList} ></Route>
+            <Route path='/directory' component={DirectoryList}></Route>
           </Content>
         </Layout>
       </Layout>
+    </Router>
 }
