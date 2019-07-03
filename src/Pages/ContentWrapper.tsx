@@ -20,14 +20,13 @@ const CSSclasses = {
 
 export const ContentWrapper = (props?:any) => {
     const [collapsed,setCollapsed] = React.useState(false);
-    const [connected,setConnected] = React.useState(true)
     const toggleCollapse = () => {
         setCollapsed(!collapsed)
     }
 
     const deconnect = () => {
         localStorage.setItem('connected', 'false')
-        setConnected(false)
+        props.setConnection(false)
     }
 
     return <Router>
@@ -54,8 +53,10 @@ export const ContentWrapper = (props?:any) => {
               </Link>
             </Menu.Item>
             <Menu.Item key='4' onClick={() => deconnect()}>
+            <Link to='/'>
                 <Icon type='close' />
                 <span>Déconnexion</span>
+            </Link>
             </Menu.Item>
           </Menu>
         </Sider>
