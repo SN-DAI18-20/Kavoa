@@ -2,9 +2,10 @@ import axios from 'axios'
 
 const {request} = axios;
 
-const url = 'https://www.api.ap/'
 
-export const Get = (req:string, query:'') => {
+const url = 'http://104.46.44.90/'
+
+export const Get = (req:'domaines'|'dossiers'|'clients'|'diligences'|'collaborateurs', query?:'') => {
     return request({
         method: 'GET',
         url: url + req,

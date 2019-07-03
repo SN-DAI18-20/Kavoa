@@ -1,30 +1,31 @@
 import * as React from 'react';
 
 import { Spin, Icon } from 'antd';
+import { AxiosPromise } from 'axios';
 
 interface props {
-    promise: Promise<any>,
+    promise: AxiosPromise,
+    Component:any,
     children?: any,
-    Component:any
+    size?:number
 }
 
 export const Lazy = (props:props) => {
-    const {promise, Component} = props
+    const {promise, Component,size} = props
     const [promiseStatus,setPromiseStatus] = React.useState()
     const [value,setValue] = React.useState()
     promise
     .then(promise => {
         setPromiseStatus(promise.status)
-        return promise.json()
+        setValue(promise.data)
         })
-    .then(data => setValue(data))
     .catch(err => console.log(err))
     return(
         <>
         {
             promiseStatus !== 200
-                ? <Spin indicator={<Icon type='loading' spin style={{fontSize: 24}} />} />
-                : <Component props={value} />
+                ?<div> <Spin indicator={<Icon type='loading' spin style={{fontSize: size ? size : 30}} />} /></div>
+                : value !== undefined ? <Component datas={value} /> : <></>
         }
         </>
     )
