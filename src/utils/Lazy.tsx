@@ -2,16 +2,18 @@ import * as React from 'react';
 
 import { Spin, Icon } from 'antd';
 import { AxiosPromise } from 'axios';
+import { ReactComponentLike } from 'prop-types';
 
 interface props {
     promise: AxiosPromise,
-    Component:any,
+    Component:ReactComponentLike,
     children?: any,
-    size?:number
+    size?:number,
+    style?:React.CSSProperties
 }
 
 export const Lazy = (props:props) => {
-    const {promise, Component,size} = props
+    const {promise, Component,size,style} = props
     const [promiseStatus,setPromiseStatus] = React.useState()
     const [value,setValue] = React.useState()
     promise
@@ -24,7 +26,7 @@ export const Lazy = (props:props) => {
         <>
         {
             promiseStatus !== 200
-                ?<div> <Spin indicator={<Icon type='loading' spin style={{fontSize: size ? size : 30}} />} /></div>
+                ?<div style={style ? style : {display:'flex', margin: 20} } > <Spin indicator={<Icon type='loading' spin style={{fontSize: size ? size : 30}} />} /></div>
                 : value !== undefined ? <Component datas={value} /> : <></>
         }
         </>
