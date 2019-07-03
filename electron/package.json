@@ -1,0 +1,33 @@
+{
+  "name": "kavoa-electron",
+  "version": "0.1.0",
+  "description": "Electron configuration for generating cross-platform applications for Kavoa",
+  "main": "app/index.js",
+  "scripts": {
+    "copy_app": "sh bin/copy_app.sh",
+    "run": "sh bin/copy_app.sh && electron app/",
+    "build": "sh bin/copy_app.sh && electron-builder"
+  },
+  "build": {
+    "appId": "fr.scholanova.dai1820.${name}",
+    "productName": "kavoa",
+    "copyright": "Copyright © 2019 ${author}",
+    "directories": {
+      "app": ".",
+      "output": "./dist"
+    },
+    "mac": {
+      "category": "public.app-category.business"
+    },
+    "linux": {
+      "target": "zip",
+      "category": "Office"
+    }
+  },
+  "author": "DAI 18-20 Schola Nova",
+  "license": "Unlicense",
+  "devDependencies": {
+    "electron": "^5.0.6",
+    "electron-builder": "^20.44.4"
+  }
+}
