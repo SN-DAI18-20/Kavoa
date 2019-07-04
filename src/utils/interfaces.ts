@@ -18,7 +18,7 @@ export interface DiligencesInterface {
     ID:number,
     Collaborateur:number,
     Dossier:number,
-    DateCourses: Date,
+    DateCourses: string,
     Heure_TotalDecimal:number,
     Detail:string
 }
