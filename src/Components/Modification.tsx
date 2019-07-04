@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { Card, Button, Input, DatePicker, TimePicker } from 'antd';
 import { DiligencesInterface } from '../utils/interfaces';
-import moment from 'moment'
-import { makeStyles } from '@material-ui/styles'
+import moment from 'moment';
+import { makeStyles } from '@material-ui/styles';
 import { Lazy } from '../utils/Lazy';
 import { Get } from '../utils/api';
 const { useState } = React
