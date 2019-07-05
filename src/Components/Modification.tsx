@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { Card, Button, Input, DatePicker, TimePicker } from 'antd';
+import { Card, Button, Input,DatePicker, TimePicker } from 'antd';
 import { DiligencesInterface } from '../utils/interfaces';
 import moment from 'moment';
 import { makeStyles } from '@material-ui/styles';
 import { Lazy } from '../utils/Lazy';
-import { Get } from '../utils/api';
+import { Get, Post } from '../utils/api';
 const { useState } = React
 interface props {
     datas: DiligencesInterface
@@ -14,10 +14,29 @@ export const Modification = (props:props) => {
     return <DiligenceForm datas={props.datas} />
     // return <Lazy promise={Get('diligences')} Component={DiligenceForm} />
 }
-
+const { TextArea } = Input;
 const useStyle = makeStyles({
-    truc:{
-        height:'100%'
+    pannel:{
+        display:'flex',
+        flexDirection:'column',
+        margin:'1%'
+        
+    },
+    mainView:{
+        display:'flex',
+        flexDirection:'row',
+        width:'auto',
+        height: '100%'
+    },
+    label:{
+        margin:' 0 20px 20px 0'
+    },
+    input:{
+        width:'200%',
+        margin:' 0 8px 8px 0'
+    },
+    textarea:{
+        maxwidth:'378px!important'
     }
 })
 
@@ -37,27 +56,31 @@ const DiligenceForm = (props:props) => {
 
     const [allData, setAllData] = useState(datas)
 
-    return<Card className={classe.truc} >
-            <div style={{display: 'flex', flexDirection: 'row'}} >
-                <label htmlFor='date'>Date: </label>
-                <DatePicker id='date' name='date' defaultValue={moment(dateCourses, 'YYYY-MM-DD')} onChange={(el:any) => setDateCourses(el.target.value)} placeholder='Date'/>
+    const sendData=() => {
+        setAllData({Collaborateur:collaborateur, DateCourses: dateCourses, Detail: detail, Dossier: dossier, Heure_TotalDecimal: tempsTotal,ID: props.datas.ID})
+        console.log(allData)
+        Post('testposting',{diligences:allData}).then(e => console.log(e.status))
+    }
+
+    return<Card style={{height:'100%', display:'flex', flexDirection:'column'}}>
+        <h2>Modification</h2>
+        <div className={classe.mainView} >
+        <div className={classe.pannel} >
+                <label className={classe.label} htmlFor='date'>Date: </label>
+                <label className={classe.label} htmlFor="dossier">Dossier: </label>
+                <label className={classe.label}  htmlFor="collaborateur">Collaborateur: </label>
+                <label className={classe.label} htmlFor="heure">Temps passé: </label>
+                <label className={classe.label} htmlFor="detail">Details: </label>
+
+        </div>
+        <div className={classe.pannel} >
+                <DatePicker className={classe.input} id='date' name='date' defaultValue={moment(dateCourses, 'YYYY-MM-DD')} onChange={(el:any) => setDateCourses(el.target.value)} placeholder='Date'/>
+                <Input className={classe.input} type='text'   value={dossier} onChange={(el:any) => setDossier(el.target.value)} placeholder='Dossier' />
+                <Input className={classe.input} type='text' value={collaborateur} onChange={(el:any) => setCollaborateur(el.target.value)} placeholder='Collaborateur'/>
+                <TimePicker className={classe.input} format='HH:mm' defaultValue={moment(`${heureTotal}:${minuteTotal}`,'HH:mm')} onChange={e => setTempsTotal(`${e.hour()},${e.minute()}`)}/>
+                <Input.TextArea className={classe.textarea} value={detail} onChange={(el:any) => setDetail(el.target.value)} placeholder='Detail' />
+        </div>
             </div>
-            <div style={{display: 'flex', flexDirection: 'row'}} >
-                <label htmlFor="dossier">Dossier: </label>
-                <Input type='text' value={dossier} onChange={(el:any) => setDossier(el.target.value)} placeholder='Dossier' />
-            </div>
-            <div style={{display: 'flex', flexDirection: 'row'}} >
-                <label htmlFor="collaborateur">Collaborateur: </label>
-                <Input type='text' value={collaborateur} onChange={(el:any) => setCollaborateur(el.target.value)} placeholder='Collaborateur'/>
-            </div>
-            <div style={{display: 'flex', flexDirection: 'row'}} >
-                <label htmlFor="heure">Temps passé: </label>
-                <TimePicker format='HH:mm' defaultValue={moment(`${heureTotal}:${minuteTotal}`,'HH:mm')} onChange={e => setTempsTotal(`${e.hour()},${e.minute()}`)}/>
-            </div>
-            <div style={{display: 'flex', flexDirection: 'row'}} >
-                <label htmlFor="detail">Details: </label>
-                <Input.TextArea value={detail} onChange={(el:any) => setDetail(el.target.value)} placeholder='Detail' />
-            </div>
-            <Button onClick={() => setAllData({Collaborateur:collaborateur, DateCourses: dateCourses, Detail: detail, Dossier: dossier, Heure_TotalDecimal: tempsTotal,ID: props.datas.ID})} >Valider</Button>
+            <Button type="primary"  style={{"margin":"1%"}} onClick={() => sendData()} >Valider</Button>
     </Card>
 }
