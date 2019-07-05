@@ -11,7 +11,7 @@ interface props {
 }
 
 export const RouterUtils = (props:props) => {
-    const { route} = props
+    const { route } = props
     const LinkRef:any = React.createRef()
     return <span onClick={() => LinkRef.current.click()}>
         {props.children}

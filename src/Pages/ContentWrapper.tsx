@@ -50,7 +50,13 @@ export const ContentWrapper = (props?:any) => {
                     <span>Dossiers</span>
               </Link>
             </Menu.Item>
-            <Menu.Item key='4' onClick={() => deconnect()}>
+            <Menu.Item key="4">
+                <Link to='diligences'>
+                    <Icon type="file-done" />
+                    <span>Diligences</span>
+              </Link>
+            </Menu.Item>
+            <Menu.Item key='5' onClick={() => deconnect()}>
             <Link to='/'>
                 <Icon type='close' />
                 <span>Déconnexion</span>
@@ -74,21 +80,16 @@ export const ContentWrapper = (props?:any) => {
                 background: '#fff',
             }}
             >
-            {/* <Route exact path='/' component={Home}></Route>
-            <Route path='/client' component={ClientList} ></Route>
-            <Route path='/directory' component={DirectoryList}></Route> */}
-            <Route path='/:component' component={MatchComponent} />
+            <Route path='/:component' component={MatchSimpleComponent} />
+            <Route path='/:component/:id' component={MatchIdComponent} />
           </Content>
         </Layout>
       </Layout>
     </Router>
 }
 
-const MatchComponent = (props:any) => {
-    console.log("props",props.match.params)
-    const component = props.match.params.component
-    const [Selected, setSelected] = React.useState()
-
+const MatchSimpleComponent = (props:any) => {
+    const { component } = props.match.params
     return(
         <>{
             component === 'client'
@@ -99,5 +100,15 @@ const MatchComponent = (props:any) => {
                         ? <p>Diligence</p>
                         : <RouteError/>
          }</>
+    )
+}
+
+const MatchIdComponent = (props:any) => {
+    const {component,id} = props.match.params;
+
+    return(
+        <>{
+
+        }</>
     )
 }
