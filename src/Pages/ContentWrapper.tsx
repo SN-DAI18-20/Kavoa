@@ -15,6 +15,7 @@ const {Header, Content, Sider } = Layout
 
 export const ContentWrapper = (props?:any) => {
     const [collapsed,setCollapsed] = React.useState(false);
+    const [siderWidth, setSiderWidth] = React.useState(80)
     const toggleCollapse = () => {
         setCollapsed(!collapsed)
     }
@@ -26,7 +27,7 @@ export const ContentWrapper = (props?:any) => {
 
     return <Router>
     <Layout style={{height: '100vh'}}>
-        <Sider trigger={null} collapsible collapsed={collapsed}>
+        <Sider collapsedWidth={siderWidth} breakpoint='sm' onBreakpoint={(el) => el ? setSiderWidth(0): setSiderWidth(80)} trigger={null} collapsible collapsed={collapsed}>
           <div style={{display:'flex', flexDirection:'row', alignItems:'center', marginLeft:25, marginTop: 20, marginBottom:20}} >
               <img src={avocado} height='30' />
               { !collapsed ? <h1 style={{color:'white', fontSize:'50', marginLeft: 20, marginTop: 10}}> Kavoa </h1> :<></>}
