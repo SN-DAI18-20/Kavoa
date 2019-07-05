@@ -1,22 +1,17 @@
 import * as React from 'react'
 
-import { Layout, Menu, Icon } from 'antd';
+import { Layout, Menu, Icon, Select } from 'antd';
 
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 import { ClientList } from '../Components/ClientList'
 import { DirectoryList } from '../Components/DirectoryList';
 import { Home } from '../Components/Home';
+import { RouteError } from '../Components/RouteError';
+
+import avocado from '../assets/avocado-svgrepo-com1.svg'
 
 const {Header, Content, Sider } = Layout
-
-const CSSclasses = {
-    logo:{
-        height: 32,
-        background: 'rgba(255, 255, 255, 0.2)',
-        margin: 16
-    }
-}
 
 export const ContentWrapper = (props?:any) => {
     const [collapsed,setCollapsed] = React.useState(false);
@@ -32,7 +27,10 @@ export const ContentWrapper = (props?:any) => {
     return <Router>
     <Layout style={{height: '100vh'}}>
         <Sider trigger={null} collapsible collapsed={collapsed}>
-          <div style={CSSclasses.logo} />
+          <div style={{display:'flex', flexDirection:'row', alignItems:'center', marginLeft:25, marginTop: 20, marginBottom:20}} >
+              <img src={avocado} height='30' />
+              { !collapsed ? <h1 style={{color:'white', fontSize:'50', marginLeft: 20, marginTop: 10}}> Kavoa </h1> :<></>}
+          </div>
           <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
             <Menu.Item key="1">
                 <Link to='/'>
@@ -52,7 +50,13 @@ export const ContentWrapper = (props?:any) => {
                     <span>Dossiers</span>
               </Link>
             </Menu.Item>
-            <Menu.Item key='4' onClick={() => deconnect()}>
+            <Menu.Item key="4">
+                <Link to='diligences'>
+                    <Icon type="file-done" />
+                    <span>Diligences</span>
+              </Link>
+            </Menu.Item>
+            <Menu.Item key='5' onClick={() => deconnect()}>
             <Link to='/'>
                 <Icon type='close' />
                 <span>Déconnexion</span>
@@ -76,11 +80,35 @@ export const ContentWrapper = (props?:any) => {
                 background: '#fff',
             }}
             >
-            <Route exact path='/' component={Home}></Route>
-            <Route path='/client' component={ClientList} ></Route>
-            <Route path='/directory' component={DirectoryList}></Route>
+            <Route path='/:component' component={MatchSimpleComponent} />
+            <Route path='/:component/:id' component={MatchIdComponent} />
           </Content>
         </Layout>
       </Layout>
     </Router>
+}
+
+const MatchSimpleComponent = (props:any) => {
+    const { component } = props.match.params
+    return(
+        <>{
+            component === 'client'
+                ? <ClientList/>
+                : component === 'directory'
+                    ? <p>Directory</p>
+                    : component === 'diligences'
+                        ? <p>Diligence</p>
+                        : <RouteError/>
+         }</>
+    )
+}
+
+const MatchIdComponent = (props:any) => {
+    const {component,id} = props.match.params;
+
+    return(
+        <>{
+
+        }</>
+    )
 }
