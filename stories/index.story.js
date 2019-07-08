@@ -3,7 +3,8 @@ import { Domaines, Collaborateurs, Diligences, Dossiers, Clients } from './Get.s
 import { Modification } from '../src/Components/Modification'
 import * as React from 'react'
 import { storiesOf } from '@storybook/react'
-import { LoginStory } from './Login.story';
+import { LoginStory } from './Login.story'
+import { GenericList } from './GenericList.js'
 
 storiesOf('Kavoa', module)
     .add('Main View', () => <p>Main View mdr</p>)
@@ -22,6 +23,12 @@ const diligences = {
 
 storiesOf('Modification View', module)
     .add('No data', () => <Modification datas={diligences} />)
+
+storiesOf('Generic list', module)
+    .add('GenericList Domaine', () => <GenericList Type="domaines"/>)
+    .add('GenericList Client', () => <GenericList Type="clients"/>)
+    .add('GenericList Client', () => <GenericList Type="clients"/>)
+    .add('GenericList Client', () => <GenericList Type="clients"/>)
 
 storiesOf('HTTP GET', module)
     .add('domaines', () => <Domaines/>)
