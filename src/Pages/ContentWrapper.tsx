@@ -5,11 +5,12 @@ import { Layout, Menu, Icon, Select } from 'antd';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 import { ClientList } from '../Components/ClientList'
-import { DirectoryList } from '../Components/DirectoryList';
-import { Home } from '../Components/Home';
-import { RouteError } from '../Components/RouteError';
+import { RouteError } from '../Components/RouteError'
+
+import { Get } from '../utils/api';
 
 import avocado from '../assets/avocado-svgrepo-com1.svg'
+import { Lazy } from '../utils/Lazy';
 
 const {Header, Content, Sider } = Layout
 
@@ -46,7 +47,7 @@ export const ContentWrapper = (props?:any) => {
                 </Link>
             </Menu.Item>
             <Menu.Item key="3">
-                <Link to='directory'>
+                <Link to='dossier'>
                     <Icon type="database" />
                     <span>Dossiers</span>
               </Link>
@@ -81,7 +82,7 @@ export const ContentWrapper = (props?:any) => {
                 background: '#fff',
             }}
             >
-            <Route path='/:component' component={MatchSimpleComponent} />
+            <Route path='/:components' component={MatchSimpleComponent} />
             <Route path='/:component/:id' component={MatchIdComponent} />
           </Content>
         </Layout>
@@ -90,26 +91,31 @@ export const ContentWrapper = (props?:any) => {
 }
 
 const MatchSimpleComponent = (props:any) => {
-    const { component } = props.match.params
+    const { components } = props.match.params
     return(
         <>{
-            component === 'client'
-                ? <ClientList/>
-                : component === 'directory'
-                    ? <p>Directory</p>
-                    : component === 'diligences'
-                        ? <p>Diligence</p>
-                        : <RouteError/>
+            props.match.isExact
+                ? components === 'client'
+                    ? <Lazy Component={ClientList} promise={Get('clients')} />
+                    : components === 'dossier'
+                        ? <Lazy Component={ClientList} promise={Get('dossiers')} />
+                        : components === 'diligences'
+                            ? <Lazy Component={ClientList} promise={Get('diligences')} />
+                            : <RouteError/>
+                : <></>
          }</>
     )
 }
 
 const MatchIdComponent = (props:any) => {
     const {component,id} = props.match.params;
-
     return(
         <>{
-
+            parseInt(id, 10)
+                ? component
+                    ? <ClientList/>
+                    : <RouteError/>
+                : <RouteError/>
         }</>
     )
 }
