@@ -82,5 +82,6 @@ const DiligenceForm = (props:props) => {
         </div>
             </div>
             <Button type="primary"  style={{"margin":"1%"}} onClick={() => sendData()} >Valider</Button>
+            <Button type="primary"  style={{"margin":"1%"}} onClick={() => window.history.back()} >Retour</Button>
     </Card>
 }
