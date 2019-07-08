@@ -1,29 +1,31 @@
 import * as React from 'react'
 
-import { Layout, Menu, Icon, Select } from 'antd';
+import { Layout, Menu, Icon, Select, Button } from 'antd';
 
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
-import { ClientList } from '../Components/ClientList'
 import { RouteError } from '../Components/RouteError'
 
 import { Get } from '../utils/api';
 
 import avocado from '../assets/avocado-svgrepo-com1.svg'
 import { Lazy } from '../utils/Lazy';
+import { Modification } from '../Components/Modification';
+import { ListAll } from '../Components/List';
 
 const {Header, Content, Sider } = Layout
 
 export const ContentWrapper = (props?:any) => {
     const [collapsed,setCollapsed] = React.useState(false);
     const [siderWidth, setSiderWidth] = React.useState(80)
+    const [route, setRoute] = React.useState()
     const toggleCollapse = () => {
         setCollapsed(!collapsed)
     }
 
     const deconnect = () => {
-        localStorage.setItem('connected', 'false')
         props.setConnection(false)
+        document.cookie = 'connected=false'
     }
 
     return <Router>
@@ -41,13 +43,13 @@ export const ContentWrapper = (props?:any) => {
                 </Link>
             </Menu.Item>
             <Menu.Item key="2">
-                <Link to='/client'>
+                <Link to='clients'>
                     <Icon type="user" />
                     <span>Utilisateurs</span>
                 </Link>
             </Menu.Item>
             <Menu.Item key="3">
-                <Link to='dossier'>
+                <Link to='dossiers'>
                     <Icon type="database" />
                     <span>Dossiers</span>
               </Link>
@@ -67,13 +69,16 @@ export const ContentWrapper = (props?:any) => {
           </Menu>
         </Sider>
         <Layout>
-          <Header style={{ background: '#fff', padding: 0 }}>
+          <Header style={{ background: '#fff', padding: 0, flexDirection:'row' }}>
             <Icon
               style={{margin: 20}}
               className="trigger"
               type={collapsed ? 'menu-unfold' : 'menu-fold'}
               onClick={() => toggleCollapse()}
               />
+                <Link to='/newDiligence'>
+                  <Button>Nouvel diligence</Button>
+                </Link>
           </Header>
           <Content
             style={{
@@ -95,13 +100,11 @@ const MatchSimpleComponent = (props:any) => {
     return(
         <>{
             props.match.isExact
-                ? components === 'client'
-                    ? <Lazy Component={ClientList} promise={Get('clients')} />
-                    : components === 'dossier'
-                        ? <Lazy Component={ClientList} promise={Get('dossiers')} />
-                        : components === 'diligences'
-                            ? <Lazy Component={ClientList} promise={Get('diligences')} />
-                            : <RouteError/>
+                ? components === 'newDiligence'
+                    ? <Modification datas={{Collaborateur:NaN, DateCourses:'', Detail:'', Dossier:NaN, Heure_TotalDecimal:NaN , ID:NaN}} />
+                    : components === 'clients'||'dossiers'||'diligences'
+                        ? <Lazy otherProps={{Type:components}} Component={ListAll} promise={Get(components)} />
+                        : <RouteError/>
                 : <></>
          }</>
     )
@@ -113,7 +116,7 @@ const MatchIdComponent = (props:any) => {
         <>{
             parseInt(id, 10)
                 ? component
-                    ? <ClientList/>
+                    ? <p/>
                     : <RouteError/>
                 : <RouteError/>
         }</>
