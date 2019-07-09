@@ -1,11 +1,12 @@
 import * as React from 'react'
-import { Card, Button, Input,DatePicker, TimePicker } from 'antd';
+import { Card, Button, Input,DatePicker, TimePicker, Icon, Spin } from 'antd';
 import { DiligencesInterface } from '../utils/interfaces';
 import moment from 'moment';
 import { makeStyles } from '@material-ui/styles';
 import { Lazy } from '../utils/Lazy';
 import { Get, Post } from '../utils/api';
 const { useState } = React
+
 interface props {
     datas: DiligencesInterface
 }
@@ -53,8 +54,21 @@ const DiligenceForm = (props:props) => {
     const [heureTotal] = useState(Heure_TotalDecimal.toString().split('.')[0])
     const [minuteTotal] = useState(Heure_TotalDecimal.toString().split('.')[1])
     const [tempsTotal, setTempsTotal] = useState()
-
+    const [dossierLoad, setDossierLoad] = useState(true)
+    const [collabLoad, setCollabLoad] = useState(true)
     const [allData, setAllData] = useState(datas)
+
+
+    if(typeof dossier === 'number'){
+        Get('dossiers',dossier.toString())
+        .then(resp => setDossier(resp.data[0].Intitule))
+        .then(() => setDossierLoad(false))    
+    }
+    if(typeof collaborateur === 'number'){
+        Get('collaborateurs', collaborateur.toString())  
+        .then(resp => setCollaborateur(resp.data[0].Nom))
+        .then(() => setCollabLoad(false))
+    }
 
     const sendData=() => {
         setAllData({Collaborateur:collaborateur, DateCourses: dateCourses, Detail: detail, Dossier: dossier, Heure_TotalDecimal: tempsTotal,ID: props.datas.ID})
@@ -75,8 +89,8 @@ const DiligenceForm = (props:props) => {
         </div>
         <div className={classe.pannel} >
                 <DatePicker className={classe.input} id='date' name='date' defaultValue={moment(dateCourses, 'YYYY-MM-DD')} onChange={(el:any) => setDateCourses(el.target.value)} placeholder='Date'/>
-                <Input className={classe.input} type='text'   value={dossier} onChange={(el:any) => setDossier(el.target.value)} placeholder='Dossier' />
-                <Input className={classe.input} type='text' value={collaborateur} onChange={(el:any) => setCollaborateur(el.target.value)} placeholder='Collaborateur'/>
+                <Input defaultValue="" className={classe.input} suffix={dossierLoad ? <Spin indicator={<Icon type='loading' spin style={{fontSize: 20}} />} /> : null} type='text'   value={dossier}  onChange={(el:any) => setDossier(el.target.value)} placeholder='Dossier'/>
+                <Input required suffix={collabLoad ? <Spin indicator={<Icon type='loading' spin style={{fontSize: 20}} />} /> : null} className={classe.input} type='text' value={collaborateur} onChange={(el:any) => setCollaborateur(el.target.value)} placeholder='Collaborateur'/>
                 <TimePicker className={classe.input} format='HH:mm' defaultValue={moment(`${heureTotal}:${minuteTotal}`,'HH:mm')} onChange={e => setTempsTotal(`${e.hour()},${e.minute()}`)}/>
                 <Input.TextArea className={classe.textarea} value={detail} onChange={(el:any) => setDetail(el.target.value)} placeholder='Detail' />
         </div>
