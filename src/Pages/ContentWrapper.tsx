@@ -12,6 +12,8 @@ import avocado from '../assets/avocado-svgrepo-com1.svg'
 import { Lazy } from '../utils/Lazy';
 import { Modification } from '../Components/Modification';
 import { ListAll } from '../Components/List';
+import { ClientList } from '../Components/ClientList';
+import { Home } from '../Components/Home';
 
 const {Header, Content, Sider } = Layout
 
@@ -22,10 +24,9 @@ export const ContentWrapper = (props?:any) => {
     const toggleCollapse = () => {
         setCollapsed(!collapsed)
     }
-
+    console.log("wrapper connection", props.connection)
     const deconnect = () => {
         props.setConnection(false)
-        document.cookie = 'connected=false'
     }
 
     return <Router>
@@ -87,12 +88,13 @@ export const ContentWrapper = (props?:any) => {
                 background: '#fff',
             }}
             >
+            <Route path='/' component={Home} />
             <Route path='/:components' component={MatchSimpleComponent} />
-            <Route path='/:component/:id' component={MatchIdComponent} />
+            <Route path='/:component/:parameter/:id' component={MatchIdComponent} />
           </Content>
         </Layout>
       </Layout>
-    </Router>
+      </Router>
 }
 
 const MatchSimpleComponent = (props:any) => {
@@ -101,9 +103,9 @@ const MatchSimpleComponent = (props:any) => {
         <>{
             props.match.isExact
                 ? components === 'newDiligence'
-                    ? <Modification datas={{Collaborateur:NaN, DateCourses:'', Detail:'', Dossier:NaN, Heure_TotalDecimal:NaN , ID:NaN}} />
+                    ? <Modification datas={{Collaborateur:NaN, DateCourses:'2019-12-2', Detail:'', Dossier:NaN, Heure_TotalDecimal:1.0 , ID:NaN}} />
                     : components === 'clients'||'dossiers'||'diligences'
-                        ? <Lazy otherProps={{Type:components}} Component={ListAll} promise={Get(components)} />
+                        ? <Lazy otherProps={{Type:components}} Component={ClientList} promise={Get(components)} />
                         : <RouteError/>
                 : <></>
          }</>
@@ -111,7 +113,7 @@ const MatchSimpleComponent = (props:any) => {
 }
 
 const MatchIdComponent = (props:any) => {
-    const {component,id} = props.match.params;
+    const {component,parameter,id} = props.match.params;
     return(
         <>{
             parseInt(id, 10)
