@@ -1,9 +1,9 @@
 export interface DossiersInterface {
     ID:number,
-    Client:number,
+    Client:number|string,
     Domaine:string,
     Intitule:string,
-    ResponsableID:number
+    ResponsableID:number|string
 }
 
 export interface ClientsInterface {

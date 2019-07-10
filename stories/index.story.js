@@ -7,7 +7,9 @@ import { LoginStory } from './Login.story'
 import { GenericList } from './GenericList.js'
 import { Lazy } from '../src/utils/Lazy';
 import { Get } from '../src/utils/api';
-import { ClientList } from '../src/Components/ClientList';
+import { ClientList } from '../src/Components/ClientList'
+import { GenericTable } from './GenericTable'
+
 storiesOf('Kavoa', module)
     .add('Main View', () => <p>Main View mdr</p>)
 
@@ -31,6 +33,13 @@ storiesOf('Generic list', module)
     .add('GenericList Client', () => <GenericList Type="clients"/>)
     .add('GenericList Client', () => <GenericList Type="clients"/>)
     .add('GenericList Client', () => <GenericList Type="clients"/>)
+
+storiesOf('Generic table', module)
+    .add('Generic table clients', () => <GenericTable Type="clients"/>)
+    .add('Generic table dossiers', () => <GenericTable Type="dossiers"/>)
+    .add('Generic table digences', () => <GenericTable Type="diligences"/>)
+    .add('Generic table collab', () => <GenericTable Type="collaborateurs"/>)
+
 
 const fakeTableData = {
     ID:123,
