@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Table, Input, Button, Icon } from 'antd'
 import { Lazy } from '../utils/Lazy';
 import { Get } from '../utils/api';
-import { ClientsInterface, DossiersInterface, CollaborateursInterface } from '../utils/interfaces'
+import { ClientsInterface, DossiersInterface, CollaborateursInterface, DiligencesInterface } from '../utils/interfaces'
 import { number } from 'prop-types';
 
 let colab = []
@@ -13,7 +13,7 @@ export const TableAll = ({otherProps,datas}:any) => {
     const [collaborateurs, setCollaborateurs] = React.useState()
     const [clients, setClients] = React.useState<Array<ClientsInterface>>([])
     const [dossiers, setDossiers] = React.useState<Array<DossiersInterface>>([])
-    const [resquestState, setResquestState] = React.useState(true)
+    const [dataSource, setDataSource] = React.useState([{}]);
         
 
 if(!loaded){
@@ -26,6 +26,7 @@ if(!loaded){
                     { title:"CP Siège", dataIndex:"CP_Siège", key:"CP_Siège"},
                     { title:"Ville Siege", dataIndex:"Ville_Siege", key:"Ville_Siege"}
                 ])
+                setDataSource(datas)
                 setLoaded(true)
 
                 break
@@ -46,17 +47,12 @@ if(!loaded){
                         Get("collaborateurs", dossier.ResponsableID.toString()).then(({data})=>{
                             dossier.ResponsableID = data[0].Nom + " " + data[0].Prenom
                         })
-                        
-                        setResquestState(true);
+                        dataSource.push(dossier);
                     
                     }else
                     {console.log("error id 0")}
-                    setResquestState(false);
-                    
-                    computedDatas.push(dossier)
-                    setComputedDatas(computedDatas)
                 });
-            
+                setDataSource(dataSource)
                 setLoaded(true)
 
                 break
@@ -69,6 +65,7 @@ if(!loaded){
                     { title:"Nom", dataIndex:"Nom", key:"Nom"},
                     { title:"Prenom", dataIndex:"Prenom", key:"Prenom"}
                 ])
+                setDataSource(datas)
                 setLoaded(true)
                 break
             case 'diligences' :
@@ -80,6 +77,16 @@ if(!loaded){
                     { title:"Heure_TotalDecimal", dataIndex:"Heure_TotalDecimal", key:"Heure_TotalDecimal"},
                     { title:"Detail", dataIndex:"Detail", key:"Detail"},
                 ])
+
+                datas.forEach((diligence:DiligencesInterface) => {
+                    if(diligence.Collaborateur != 0){
+                        Get("collaborateurs", diligence.Collaborateur.toString()).then(({data})=>{
+                            diligence.Collaborateur = data[0].Nom + " " + data[0].Prenom
+                        })
+                        dataSource.push(diligence);
+                    }
+                })
+                setDataSource(dataSource)
                 setLoaded(true)
                 break
             default:
@@ -89,7 +96,7 @@ if(!loaded){
     return <>
     
     <Table 
-      dataSource={datas} 
+      dataSource={dataSource} 
       columns={config} 
       
     >

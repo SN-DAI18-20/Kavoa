@@ -16,7 +16,7 @@ export interface ClientsInterface {
 
 export interface DiligencesInterface {
     ID:number,
-    Collaborateur:number,
+    Collaborateur:number|string,
     Dossier:number,
     DateCourses: string,
     Heure_TotalDecimal:number,
