@@ -44,7 +44,7 @@ if(!loaded){
                             dossier.Client = data[0].Raison_Sociale
                         })
                         Get("collaborateurs", dossier.ResponsableID.toString()).then(({data})=>{
-                            dossier.Client = data[0].Nom + " " + data[0].Prenom
+                            dossier.ResponsableID = data[0].Nom + " " + data[0].Prenom
                         })
                         
                         setResquestState(true);
