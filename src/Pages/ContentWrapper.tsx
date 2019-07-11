@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { Layout, Menu, Icon, Select, Button } from 'antd';
 
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
 
 import { RouteError } from '../Components/RouteError'
 
@@ -11,9 +11,8 @@ import { Get } from '../utils/api';
 import avocado from '../assets/avocado-svgrepo-com1.svg'
 import { Lazy } from '../utils/Lazy';
 import { Modification } from '../Components/Modification';
-import { ListAll } from '../Components/List';
-import { ClientList } from '../Components/ClientList';
-import { Home } from '../Components/Home';
+import { TableAll } from '../Components/Table';
+import { HomePage } from '../Components/Home';
 
 const {Header, Content, Sider } = Layout
 
@@ -24,7 +23,6 @@ export const ContentWrapper = (props?:any) => {
     const toggleCollapse = () => {
         setCollapsed(!collapsed)
     }
-    console.log("wrapper connection", props.connection)
     const deconnect = () => {
         props.setConnection(false)
     }
@@ -38,25 +36,25 @@ export const ContentWrapper = (props?:any) => {
           </div>
           <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
             <Menu.Item key="1">
-                <Link to='/'>
+                <Link to='/home'>
                     <Icon type="home" />
                     <span>Accueil</span>
                 </Link>
             </Menu.Item>
             <Menu.Item key="2">
-                <Link to='clients'>
+                <Link to='/clients' replace>
                     <Icon type="user" />
                     <span>Utilisateurs</span>
                 </Link>
             </Menu.Item>
             <Menu.Item key="3">
-                <Link to='dossiers'>
+                <Link to='/dossiers'>
                     <Icon type="database" />
                     <span>Dossiers</span>
               </Link>
             </Menu.Item>
             <Menu.Item key="4">
-                <Link to='diligences'>
+                <Link to='/diligences'>
                     <Icon type="file-done" />
                     <span>Diligences</span>
               </Link>
@@ -88,38 +86,55 @@ export const ContentWrapper = (props?:any) => {
                 background: '#fff',
             }}
             >
-            <Route path='/' component={Home} />
-            <Route path='/:components' component={MatchSimpleComponent} />
-            <Route path='/:component/:parameter/:id' component={MatchIdComponent} />
+            <Route exact path='/' render={() => <Redirect to='/home' />} />
+            <Route exact path='/:components' render={({match}) => {
+                const {components} = match.params
+                if(route!==components) setRoute(components)
+                return route === components
+                    ? <MatchSimpleComponent props={match} />
+                    : <></>
+            }}/>
+
+            <Route path='/:component/:parameter/:id' render={({match}) => {
+                const {components, parameter, id} = match.params
+                const superRoute = components + parameter + id
+                if(route !== superRoute) setRoute(superRoute)
+                return route === superRoute
+                    ?<MatchIdComponent props={match} />
+                    :<></>
+                }} />
+            <Route exact path='/diligence/:id' render={(props:any) => <Lazy promise={Get("diligences",props.match.params.id)} Component={Modification} />}/>
           </Content>
         </Layout>
       </Layout>
       </Router>
 }
 
-const MatchSimpleComponent = (props:any) => {
-    const { components } = props.match.params
+const MatchSimpleComponent = ({props}:any) => {
+    const components = props.params.components
     return(
         <>{
-            props.match.isExact
+            props.isExact
                 ? components === 'newDiligence'
-                    ? <Modification datas={{Collaborateur:NaN, DateCourses:'2019-12-2', Detail:'', Dossier:NaN, Heure_TotalDecimal:1.0 , ID:NaN}} />
-                    : components === 'clients'||'dossiers'||'diligences'
-                        ? <Lazy otherProps={{Type:components}} Component={ClientList} promise={Get(components)} />
-                        : <RouteError/>
-                : <></>
+                    ? <Modification datas={[{Collaborateur:NaN, Diligence_Date:'2019-12-2', Detail:'', Dossier:NaN, Heure_TotalDecimal:1.0 , ID:NaN}]} />
+                    : components === 'home'
+                        ? <HomePage/>
+                        : components === 'clients'||'dossiers'||'diligences'
+                            ? <Lazy otherProps={{Type:components}} Component={TableAll} promise={Get(components)} />
+                            : <RouteError/>
+                    : <RouteError/>
          }</>
     )
 }
 
-const MatchIdComponent = (props:any) => {
-    const {component,parameter,id} = props.match.params;
+const MatchIdComponent = ({props}:any) => {
+    const {component,parameter,id} = props.params;
     return(
         <>{
             parseInt(id, 10)
-                ? component
-                    ? <p/>
-                    : <RouteError/>
+                ? component === 'clients'||'dossiers'||'diligences'
+                    ? <Lazy promise={Get(component, parameter+'/'+id)} Component={TableAll} otherProps={{Type:component}} />
+                        : <RouteError/>
                 : <RouteError/>
         }</>
     )
