@@ -1,7 +1,24 @@
 import * as React from 'react';
 
-export const Home = () => {
+import { Card } from 'antd'
+
+const valueOf = (table:Array<string>, search:string ) => table[ table.indexOf(search) + 1 ]
+const cookieTable = document.cookie.split(';').toString().split('=').toString().split(',').map((table:string) => table.trim())
+console.log(cookieTable)
+export const HomePage = () => {
     return(
-        <div>Home Page</div>
+        <div style={{display:'flex', alignContent:'center', justifyContent:'center'}} >
+            <div style={{flexDirection:'column', display:'flex'}}>
+            <h1>Bienvenue {valueOf(cookieTable, 'nom')} {valueOf(cookieTable, 'prenom')} </h1>
+            <div style={{display:'flex', flexDirection:'row', flexWrap:'wrap'}}>
+                <Card>
+                    Diligence
+                </Card>
+                <Card>
+                    Dossiers
+                </Card>
+                </div>
+            </div>
+        </div>
     )
 }
