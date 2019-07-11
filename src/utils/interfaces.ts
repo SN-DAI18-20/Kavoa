@@ -1,9 +1,12 @@
+import { ReactElement } from "react";
+
 export interface DossiersInterface {
     ID:number,
     Client:number|string,
     Domaine:string,
     Intitule:string,
-    ResponsableID:number|string
+    ResponsableID:number|string,
+    action?:ReactElement
 }
 
 export interface ClientsInterface {
@@ -12,6 +15,7 @@ export interface ClientsInterface {
     Adresse_Siege:string,
     CP_Siège:string,
     Ville_Siege:string
+    action?:ReactElement
 }
 
 export interface DiligencesInterface {
@@ -21,10 +25,12 @@ export interface DiligencesInterface {
     Diligence_Date: string,
     Heure_TotalDecimal:number,
     Detail:string
+    action?:ReactElement
 }
 
 export interface CollaborateursInterface {
     ID:number,
     Nom:string,
     Prenom:string
+    action?:ReactElement
 }
