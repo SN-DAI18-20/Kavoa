@@ -4,6 +4,7 @@ import { Lazy } from '../utils/Lazy';
 import { Get } from '../utils/api';
 import { ClientsInterface, DossiersInterface, CollaborateursInterface, DiligencesInterface } from '../utils/interfaces'
 import { number } from 'prop-types';
+import { RouterUtils } from '../utils/Router';
 
 let colab = []
 export const TableAll = ({otherProps,datas}:any) => {
@@ -13,14 +14,15 @@ export const TableAll = ({otherProps,datas}:any) => {
     const [collaborateurs, setCollaborateurs] = React.useState()
     const [clients, setClients] = React.useState<Array<ClientsInterface>>([])
     const [dossiers, setDossiers] = React.useState<Array<DossiersInterface>>([])
+    const [superLoad, setSuperLoad] = React.useState(false)
     const [dataSource, setDataSource] = React.useState([{}]);
-        
+
 
 if(!loaded){
         switch (otherProps.Type) {
             case 'clients':
                 setConfig([
-                    { title:"ID", dataIndex:"ID", key:"ID"}, 
+                    { title:"ID", dataIndex:"ID", key:"ID"},
                     { title:"Raison Sociale", dataIndex:"Raison_Sociale", key:"Raison_Sociale"},
                     { title:"Adresse Siege", dataIndex:"Adresse_Siege", key:"Adresse_Siege"},
                     { title:"CP Siège", dataIndex:"CP_Siège", key:"CP_Siège"},
@@ -32,15 +34,15 @@ if(!loaded){
                 break
             case 'dossiers':
                 setConfig([
-                    { title:"ID", dataIndex:"ID", key:"ID"}, 
-                    { title:"Client", dataIndex:"Client", key:"Client"}, 
-                    { title:"Domaine", dataIndex:"Domaine", key:"Domaine"}, 
-                    { title:"Intitule", dataIndex:"Intitule", key:"Intitule"}, 
-                    { title:"Responsable", dataIndex:"ResponsableID", key:"ResponsableID"} 
+                    { title:"ID", dataIndex:"ID", key:"ID"},
+                    { title:"Client", dataIndex:"Client", key:"Client"},
+                    { title:"Domaine", dataIndex:"Domaine", key:"Domaine"},
+                    { title:"Intitule", dataIndex:"Intitule", key:"Intitule"},
+                    { title:"Responsable", dataIndex:"ResponsableID", key:"ResponsableID"}
                 ])
                 datas.forEach((dossier:DossiersInterface) => {
                     if(dossier.Client != 0 || dossier.ResponsableID != 0){
-                        
+
                         Get("clients", dossier.Client.toString()).then(({data})=>{
                             dossier.Client = data[0].Raison_Sociale
                         })
@@ -48,7 +50,7 @@ if(!loaded){
                             dossier.ResponsableID = data[0].Nom + " " + data[0].Prenom
                         })
                         dataSource.push(dossier);
-                    
+
                     }else
                     {console.log("error id 0")}
                 });
@@ -93,15 +95,28 @@ if(!loaded){
                 break
           }
     }
+
+    config.push({
+        title:'action',
+        dataIndex:'action',
+        key:'action'
+    })
     return <>
-    
-    <Table 
-      dataSource={dataSource} 
-      columns={config} 
-      
-    >
-    
-    </Table>
-    
+    {
+    loaded
+        ? <Table
+      dataSource={dataSource.map((data:any) => {return {...data,action:
+        otherProps.Type === 'clients'
+            ?<RouterUtils route={'/dossiers/clients/' + data.ID} > <Button >Voir</Button> </RouterUtils>
+            : otherProps.Type === 'dossiers'
+                ? <RouterUtils route={'/diligences/dossiers/' + data.Client} > <Button >Voir</Button> </RouterUtils>
+                : otherProps.Type === 'diligences'
+                    ? <RouterUtils route={'/diligence/' + data.ID} > <Button >Modifier</Button> </RouterUtils>
+                    : <></>
+        }})}
+      columns={config}/>
+        : <></>
+}
+
     </>
   }
