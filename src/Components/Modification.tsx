@@ -8,11 +8,12 @@ import { Get, Post } from '../utils/api';
 const { useState } = React
 
 interface props {
-    datas: DiligencesInterface
+    datas: Array<DiligencesInterface>
 }
 
 export const Modification = (props:props) => {
-    return <DiligenceForm datas={props.datas} />
+    console.log("super mega props", props.datas)
+    return <DiligenceForm datas={props.datas[0]} />
     // return <Lazy promise={Get('diligences')} Component={DiligenceForm} />
 }
 const { TextArea } = Input;
@@ -21,7 +22,7 @@ const useStyle = makeStyles({
         display:'flex',
         flexDirection:'column',
         margin:'1%'
-        
+
     },
     mainView:{
         display:'flex',
@@ -41,14 +42,14 @@ const useStyle = makeStyles({
     }
 })
 
-const DiligenceForm = (props:props) => {
+const DiligenceForm = (props:{datas:DiligencesInterface}) => {
 
     const classe = useStyle()
 
     const { datas } = props;
-    const { Collaborateur, DateCourses, Detail, Dossier, Heure_TotalDecimal } = datas;
+    const { Collaborateur, Diligence_Date, Detail, Dossier, Heure_TotalDecimal } = datas;
     const [collaborateur, setCollaborateur] = useState(Collaborateur)
-    const [dateCourses, setDateCourses] = useState(DateCourses.split('T')[0])
+    const [dateCourses, setDateCourses] = useState(Diligence_Date.split('T')[0])
     const [detail, setDetail] = useState(Detail)
     const [dossier, setDossier] = useState(Dossier)
     const [heureTotal] = useState(Heure_TotalDecimal.toString().split('.')[0])
@@ -62,16 +63,16 @@ const DiligenceForm = (props:props) => {
     if(typeof dossier === 'number'){
         Get('dossiers',dossier.toString())
         .then(resp => setDossier(resp.data[0].Intitule))
-        .then(() => setDossierLoad(false))    
+        .then(() => setDossierLoad(false))
     }
     if(typeof collaborateur === 'number'){
-        Get('collaborateurs', collaborateur.toString())  
+        Get('collaborateurs', collaborateur.toString())
         .then(resp => setCollaborateur(resp.data[0].Nom))
         .then(() => setCollabLoad(false))
     }
 
     const sendData=() => {
-        setAllData({Collaborateur:collaborateur, DateCourses: dateCourses, Detail: detail, Dossier: dossier, Heure_TotalDecimal: tempsTotal,ID: props.datas.ID})
+        setAllData({Collaborateur:collaborateur, Diligence_Date: dateCourses, Detail: detail, Dossier: dossier, Heure_TotalDecimal: tempsTotal,ID: props.datas.ID})
         console.log(allData)
         Post('testposting',{diligences:allData}).then(e => console.log(e.status))
     }
