@@ -112,11 +112,15 @@ export const ContentWrapper = (props?:any) => {
 
 const MatchSimpleComponent = ({props}:any) => {
     const components = props.params.components
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    const yyyy = today.getFullYear();
     return(
         <>{
             props.isExact
                 ? components === 'newDiligence'
-                    ? <Modification datas={[{Collaborateur:NaN, Diligence_Date:'2019-12-2', Detail:'', Dossier:NaN, Heure_TotalDecimal:1.0 , ID:NaN}]} />
+                    ? <Modification datas={[{Collaborateur:NaN, Diligence_Date:`${yyyy}-${mm}-${dd}`, Detail:'', Dossier:NaN, Heure_TotalDecimal:1.0 , ID:NaN}]} />
                     : components === 'home'
                         ? <HomePage/>
                         : components === 'clients'||'dossiers'||'diligences'

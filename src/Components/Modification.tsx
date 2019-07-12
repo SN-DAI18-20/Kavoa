@@ -49,7 +49,7 @@ const DiligenceForm = (props:{datas:DiligencesInterface}) => {
     const { datas } = props;
     const { Collaborateur, Diligence_Date, Detail, Dossier, Heure_TotalDecimal } = datas;
     const [collaborateur, setCollaborateur] = useState(Collaborateur)
-    const [dateCourses, setDateCourses] = useState(Diligence_Date.split('T')[0])
+    const [dateCourses, setDateCourses] = useState(Diligence_Date ? Diligence_Date.split('T')[0] : '' )
     const [detail, setDetail] = useState(Detail)
     const [dossier, setDossier] = useState(Dossier)
     const [heureTotal] = useState(Heure_TotalDecimal.toString().split('.')[0])
@@ -89,7 +89,14 @@ const DiligenceForm = (props:{datas:DiligencesInterface}) => {
 
         </div>
         <div className={classe.pannel} >
-                <DatePicker className={classe.input} id='date' name='date' defaultValue={moment(dateCourses, 'YYYY-MM-DD')} onChange={(el:any) => setDateCourses(el._id)} placeholder='Date'/>
+                <DatePicker className={classe.input} id='date' name='date' defaultValue={moment(dateCourses, 'YYYY-MM-DD')} onChange={(el:any) => {
+                    const today = new Date();
+                    const dd = String(today.getDate()).padStart(2, '0');
+                    const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                    const yyyy = today.getFullYear();
+                    setDateCourses(el ? el._id:moment(`${yyyy}-${mm}-${dd}`, 'YYYY-MM-DD'))
+                    return el ? moment(el._id, 'YYYY-MM-DD') : moment(`${yyyy}-${mm}-${dd}`, 'YYYY-MM-DD')
+                    }} placeholder='Date'/>
                 <Input defaultValue="" className={classe.input} suffix={dossierLoad ? <Spin indicator={<Icon type='loading' spin style={{fontSize: 20}} />} /> : null} type='text'   value={dossier}  onChange={(el:any) => setDossier(el.target.value)} placeholder='Dossier'/>
                 <Input required suffix={collabLoad ? <Spin indicator={<Icon type='loading' spin style={{fontSize: 20}} />} /> : null} className={classe.input} type='text' value={collaborateur} onChange={(el:any) => setCollaborateur(el.target.value)} placeholder='Collaborateur'/>
                 <TimePicker className={classe.input} format='HH:mm' defaultValue={moment(`${heureTotal}:${minuteTotal}`,'HH:mm')} onChange={e => setTempsTotal(`${e.hour()},${e.minute()}`)}/>
