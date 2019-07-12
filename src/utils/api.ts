@@ -24,6 +24,9 @@ export const Patch = () => {
 
 }
 
-export const Delete = () => {
-
+export const Delete = (req:string) => {
+    return request({
+        method:'delete',
+        url: url+req
+    })
 }

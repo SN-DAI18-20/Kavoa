@@ -5,6 +5,7 @@ import { Get } from '../utils/api';
 import { ClientsInterface, DossiersInterface, CollaborateursInterface, DiligencesInterface } from '../utils/interfaces'
 import { number } from 'prop-types';
 import { RouterUtils } from '../utils/Router';
+import { ModalView } from './Modal';
 
 let colab = []
 export const TableAll = ({otherProps,datas}:any) => {
@@ -16,7 +17,13 @@ export const TableAll = ({otherProps,datas}:any) => {
     const [dossiers, setDossiers] = React.useState<Array<DossiersInterface>>([])
     const [superLoad, setSuperLoad] = React.useState(false)
     const [dataSource, setDataSource] = React.useState([{}]);
-
+    const [modal, setModal] = React.useState(false)
+    const [ID, setID] = React.useState()
+    const actionConfig = {
+        title:'action',
+        dataIndex:'action',
+        key:'action'
+    }
 
 if(!loaded){
         switch (otherProps.Type) {
@@ -26,9 +33,10 @@ if(!loaded){
                     { title:"Raison Sociale", dataIndex:"Raison_Sociale", key:"Raison_Sociale"},
                     { title:"Adresse Siege", dataIndex:"Adresse_Siege", key:"Adresse_Siege"},
                     { title:"CP Siège", dataIndex:"CP_Siège", key:"CP_Siège"},
-                    { title:"Ville Siege", dataIndex:"Ville_Siege", key:"Ville_Siege"}
+                    { title:"Ville Siege", dataIndex:"Ville_Siege", key:"Ville_Siege"},
+                    actionConfig
                 ])
-                setDataSource(datas)
+                setDataSource(datas.map((data:any) => ({...data,action:<RouterUtils route={'/dossiers/clients/' + data.ID} > <Button >Voir</Button> </RouterUtils> }) ) )
                 setLoaded(true)
 
                 break
@@ -38,7 +46,8 @@ if(!loaded){
                     { title:"Client", dataIndex:"Client", key:"Client"},
                     { title:"Domaine", dataIndex:"Domaine", key:"Domaine"},
                     { title:"Intitule", dataIndex:"Intitule", key:"Intitule"},
-                    { title:"Responsable", dataIndex:"ResponsableID", key:"ResponsableID"}
+                    { title:"Responsable", dataIndex:"ResponsableID", key:"ResponsableID"},
+                    actionConfig
                 ])
                 datas.forEach((dossier:DossiersInterface) => {
                     if(dossier.Client != 0 || dossier.ResponsableID != 0){
@@ -49,6 +58,7 @@ if(!loaded){
                         Get("collaborateurs", dossier.ResponsableID.toString()).then(({data})=>{
                             dossier.ResponsableID = data[0].Nom + " " + data[0].Prenom
                         })
+                        dossier.action = <RouterUtils route={'/diligences/dossiers/' + dossier.Client} > <Button >Voir</Button> </RouterUtils>
                         dataSource.push(dossier);
 
                     }else
@@ -65,7 +75,8 @@ if(!loaded){
                 setConfig([
                     { title:"ID", dataIndex:"ID", key:"ID"},
                     { title:"Nom", dataIndex:"Nom", key:"Nom"},
-                    { title:"Prenom", dataIndex:"Prenom", key:"Prenom"}
+                    { title:"Prenom", dataIndex:"Prenom", key:"Prenom"},
+                    actionConfig
                 ])
                 setDataSource(datas)
                 setLoaded(true)
@@ -78,6 +89,7 @@ if(!loaded){
                     { title:"DateCourses", dataIndex:"DateCourses", key:"DateCourses"},
                     { title:"Heure_TotalDecimal", dataIndex:"Heure_TotalDecimal", key:"Heure_TotalDecimal"},
                     { title:"Detail", dataIndex:"Detail", key:"Detail"},
+                    actionConfig
                 ])
 
                 datas.forEach((diligence:DiligencesInterface) => {
@@ -85,9 +97,15 @@ if(!loaded){
                         Get("collaborateurs", diligence.Collaborateur.toString()).then(({data})=>{
                             diligence.Collaborateur = data[0].Nom + " " + data[0].Prenom
                         })
+                        diligence.action = <>
+                            <RouterUtils route={'/diligence/' + diligence.ID} > <Button >Modifier</Button> </RouterUtils>
+                            <Button onClick={() =>{setModal(true)
+                                setID(diligence.ID)}} >Supprimer</Button>
+                        </>
                         dataSource.push(diligence);
                     }
                 })
+
                 setDataSource(dataSource)
                 setLoaded(true)
                 break
@@ -95,28 +113,14 @@ if(!loaded){
                 break
           }
     }
-
-    config.push({
-        title:'action',
-        dataIndex:'action',
-        key:'action'
-    })
     return <>
     {
     loaded
         ? <Table
-      dataSource={dataSource.map((data:any) => {return {...data,action:
-        otherProps.Type === 'clients'
-            ?<RouterUtils route={'/dossiers/clients/' + data.ID} > <Button >Voir</Button> </RouterUtils>
-            : otherProps.Type === 'dossiers'
-                ? <RouterUtils route={'/diligences/dossiers/' + data.Client} > <Button >Voir</Button> </RouterUtils>
-                : otherProps.Type === 'diligences'
-                    ? <RouterUtils route={'/diligence/' + data.ID} > <Button >Modifier</Button> </RouterUtils>
-                    : <></>
-        }})}
+      dataSource={dataSource}
       columns={config}/>
         : <></>
 }
-
+    <ModalView value={ID} visible={modal} handleCancel={() => setModal(false)} />
     </>
   }

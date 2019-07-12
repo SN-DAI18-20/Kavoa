@@ -59,6 +59,8 @@ const DiligenceForm = (props:{datas:DiligencesInterface}) => {
     const [collabLoad, setCollabLoad] = useState(true)
     const [allData, setAllData] = useState(datas)
 
+    const valueOf = (table:Array<string>, search:string ) => table[ table.indexOf(search) + 1 ]
+    const cookieTable = document.cookie.split(';').toString().split('=').toString().split(',').map((table:string) => table.trim())
 
     if(typeof dossier === 'number'){
         Get('dossiers',dossier.toString())
@@ -74,7 +76,7 @@ const DiligenceForm = (props:{datas:DiligencesInterface}) => {
     const sendData=() => {
         setAllData({Collaborateur:collaborateur, Diligence_Date: dateCourses, Detail: detail, Dossier: dossier, Heure_TotalDecimal: tempsTotal,ID: props.datas.ID})
         console.log(allData)
-        Post('testposting',{diligences:allData}).then(e => console.log(e.status))
+        Post('testposting',{diligences:allData}).then(e => window.history.back())
     }
 
     return<Card style={{height:'100%', display:'flex', flexDirection:'column'}}>

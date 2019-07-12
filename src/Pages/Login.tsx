@@ -42,7 +42,7 @@ export const Login = (props:any) => {
                 <Input value={nom} placeholder='Nom' style={{marginBottom:10}} onChange={(el) => setNom(el.target.value)} />
                 <Input value={mdp} placeholder='Mot de passe' style={{marginBottom:10}} onChange={(el) => setMdp(el.target.value)}/>
                 <div style={{justifySelf:'center', display:'flex'}} >
-                        <Link to='/'><Button type='primary' onClick={() => tryToConnect() }>Link</Button></Link>
+                        <Link to='/'><Button type='primary' onClick={() => tryToConnect() }>Connect</Button></Link>
                         {loading ? <Spin indicator={<Icon type='loading' spin style={{fontSize: 30}} />} /> :<></>}
                 </div>
             </Card>
