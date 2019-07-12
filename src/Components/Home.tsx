@@ -11,6 +11,48 @@ const valueOf = (table:Array<string>, search:string ) => table[ table.indexOf(se
 const cookieTable = document.cookie.split(';').toString().split('=').toString().split(',').map((table:string) => table.trim())
 console.log(cookieTable)
 export const HomePage = () => {
+<<<<<<< Updated upstream
+=======
+    // console.log("blabla")
+    // const [diligence, setDiligence]= React.useState<Array<ClientsInterface>>([]);
+    // if(diligence)Get('diligences').then(({data}:any) => {
+    //     console.log('is this a pb?')
+    //     let temp = [];
+    //     for (let i = 0; i < 5; i++){
+    //         temp.push(data[i]);
+    //         console.log(data[i]);
+    //     }
+    //     setDiligence(temp)
+    // })
+    // console.log('diligence : '+  {diligence});
+
+
+    // const [client, setClient]= React.useState<Array<ClientsInterface>>([]);
+    // if(!client)Get('clients').then(({data}:any) => {
+    //     let temp = [];
+    //     for (let i = 0; i < 5; i++){
+    //         temp.push(data[i]);
+    //         console.log(data[i]);
+    //     }
+    //     setClient(temp);
+
+    // })
+    // console.log('client : '+  {client});
+
+
+    // const [dossier, setDossier]= React.useState<Array<ClientsInterface>>([]);
+    // if(!dossier)Get('dossiers').then(({data}:any) => {
+    //     let temp = [];
+    //     for (let i = 0; i < 5; i++){
+    //         temp.push(data[i]);
+    //         console.log(data[i]);
+    //     }
+    //     setDossier(temp);
+    // })
+    // console.log('dossier : '+  {dossier});
+
+
+>>>>>>> Stashed changes
     return(
         <div style={{display:'flex', alignContent:'center', justifyContent:'center'}} >
             <div style={{flexDirection:'column', display:'flex'}}>
