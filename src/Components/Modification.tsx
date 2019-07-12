@@ -89,7 +89,7 @@ const DiligenceForm = (props:{datas:DiligencesInterface}) => {
 
         </div>
         <div className={classe.pannel} >
-                <DatePicker className={classe.input} id='date' name='date' defaultValue={moment(dateCourses, 'YYYY-MM-DD')} onChange={(el:any) => setDateCourses(el.target.value)} placeholder='Date'/>
+                <DatePicker className={classe.input} id='date' name='date' defaultValue={moment(dateCourses, 'YYYY-MM-DD')} onChange={(el:any) => setDateCourses(el._id)} placeholder='Date'/>
                 <Input defaultValue="" className={classe.input} suffix={dossierLoad ? <Spin indicator={<Icon type='loading' spin style={{fontSize: 20}} />} /> : null} type='text'   value={dossier}  onChange={(el:any) => setDossier(el.target.value)} placeholder='Dossier'/>
                 <Input required suffix={collabLoad ? <Spin indicator={<Icon type='loading' spin style={{fontSize: 20}} />} /> : null} className={classe.input} type='text' value={collaborateur} onChange={(el:any) => setCollaborateur(el.target.value)} placeholder='Collaborateur'/>
                 <TimePicker className={classe.input} format='HH:mm' defaultValue={moment(`${heureTotal}:${minuteTotal}`,'HH:mm')} onChange={e => setTempsTotal(`${e.hour()},${e.minute()}`)}/>
